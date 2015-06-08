@@ -34,7 +34,8 @@ module Desuraify
             case header.text.strip
             when /^Platforms?$/i
 
-              result[:platforms] = header.parent.children.select do |platform|
+              result[:platforms] = header.parent.children.search('a').select do |platform|
+                puts "platform#{platform}"
                 platform unless platform == header || platform.text.strip.empty?
               end.map! {|platform| platform.text.strip }.uniq
 
@@ -170,7 +171,7 @@ module Desuraify
       result[:publishers] = result[:developers].map{ |dev| dev.clone } unless result[:publishers] if result[:developers]
       result[:page_title] = doc.css('title').text.strip
       result[:title] = doc.css('.title').first.css('h2').text.strip rescue nil
-      # result[:html] = html
+      result[:html] = html
 
       result
     end

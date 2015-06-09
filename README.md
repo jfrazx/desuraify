@@ -21,7 +21,8 @@ Or install it yourself as:
   require 'desuraify'
   ```
 
-  \# get all information about Dominions 4: Thrones of Ascension \n
+  \# get all information about Dominions 4: Thrones of Ascension
+  
   \# (http://www.desura.com/games/dominions-4-thrones-of-ascensions)
   ```
   game = Desuraify::Game.new('dominions-4-thrones-of-ascensions')

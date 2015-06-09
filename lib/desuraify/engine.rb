@@ -6,6 +6,8 @@ module Desuraify
       :reviews, :summary, :title, :updated, :videos, :visits, :watchers
     ]
 
+    attr_reader *ATTRIBUTES
+
     def initialize(id, options={})
       super(id, options)
     end

@@ -17,10 +17,11 @@ Or install it yourself as:
     $ gem install desuraify
 
 ## Usage
-
+  ```
   require 'desuraify'
+  ```
 
-  \# get all information about Dominions 4: Thrones of Ascension 
+  \# get all information about Dominions 4: Thrones of Ascension \n
   \# (http://www.desura.com/games/dominions-4-thrones-of-ascensions)
   ```
   game = Desuraify::Game.new('dominions-4-thrones-of-ascensions')
@@ -47,9 +48,24 @@ Or install it yourself as:
   => "Linux"
   ```
 
+  \# game developers
+  ```
+  game.developers.each do |developer|
+    puts developer[:name]
+    puts developer[:company]
+    puts developer[:id]
+  end
+
+  => "Illwinter Game Design"
+  => true
+  => "illwinter-game-design"
+  ```
+
   \# numerous other attributes are available (some partially or poorly implemented)
   ```
   puts Desuraify::Game::ATTRIBUTES.inspect
+  or
+  puts game.attributes.inspect
   ```
 
 ## TODO in no particular order

@@ -48,17 +48,26 @@ module Desuraify
     end
 
     def to_s
-      "#{@title}" rescue self
+      "#{@title}" rescue "#{self.class}::#{self.object_id}"
+    end
+
+    def rss_update
+      resp = Typhoeus::Request.get(rss, @request_opts)
+      handle_rss_response(resp)
     end
 
     private
 
     def handle_response(response)
       if response.success?
-        self.class.parse(response.body)
+        parse(response.body, @request_opts)
       else
         raise Desuraify::ResponseError.new("Got unexpected response code: #{response.code}")
       end
+    end
+
+    def handle_rss_response(response)
+      parse_rss(response.body) if response.success?
     end
 
     def update_callback(result)

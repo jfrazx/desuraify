@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["staringblind@gmail.com"]
   spec.summary       = %q{A simple Desura store scraper}
   spec.description   = %q{}
+  spec.platform      = Gem::Platform::CURRENT
   spec.homepage      = "https://github.com/jfrazx/desuraify"
   spec.license       = "MIT"
 

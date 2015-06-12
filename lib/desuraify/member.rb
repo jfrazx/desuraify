@@ -8,6 +8,10 @@ module Desuraify
     def initialize(id, options)
       super(id, options)
     end
+
+    def attributes
+      ATTRIBUTES
+    end
   end
 end
 

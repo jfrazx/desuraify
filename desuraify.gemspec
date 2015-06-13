@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["staringblind@gmail.com"]
   spec.summary       = %q{A simple Desura store scraper}
   spec.description   = %q{}
-  spec.platform      = Gem::Platform::CURRENT
+  spec.platform      = Gem::Platform::RUBY
   spec.homepage      = "https://github.com/jfrazx/desuraify"
   spec.license       = "MIT"
 
@@ -19,9 +19,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "nokogiri"
-  spec.add_runtime_dependency "typhoeus"
+  spec.add_runtime_dependency "nokogiri", ">= 1.6.6.2"
+  spec.add_runtime_dependency "typhoeus", ">= 0.7.1"
 
   spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake", "= 10.4.2"
 end

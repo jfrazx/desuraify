@@ -60,7 +60,7 @@ module Desuraify
             platform unless platform == header || platform.text.strip.empty?
           end.map! {|platform| platform.text.strip }.uniq
 
-        when /^Engines?$/i
+        when /^Engine$/i
 
           result[:engines] = header.parent.children.select do |engine|
             engine unless engine == header || engine.text.strip.empty?
@@ -70,6 +70,10 @@ module Desuraify
             eng[:id] = engine.child.attribute('href').value.split('/').last rescue nil
             eng
           end.uniq
+
+        when "Engines"
+
+          result[:engine_count] = header.next.next.text.strip.to_i rescue nil
 
         when /^Developers?/i
 
@@ -184,7 +188,44 @@ module Desuraify
 
           result[:official_page] = header.parent.search('a').attribute('href').value.strip rescue nil
 
+
+        when "Homepage"
+
+          result[:official_page] = header.parent.search('a').attribute('href').value.strip rescue nil
+
+        when "Members"
+
+          result[:member_count] = header.next.next.text.strip.to_i rescue nil
+
+        when "Established"
+
+            result[:established] = header.next.next.text.strip rescue nil
+
+        when "Company"
+
+          result[:company] = header.next.next.text.strip rescue nil
+
+        when "Office"
+
+            result[:office] = header.next.next.text.strip rescue nil
+
+        when "Address"
+
+          addresses = Array.new
+
+          header.parent.children.each do |child|
+            next if child == header || child.text.strip.empty?
+            break if child.text.strip == "Phone"
+            addresses << child.text.strip
+          end
+
+          result[:address] = addresses.map { |address| address.split("\n") }.flatten
+
+        when "Phone"
+
+          result[:phone] = header.next.next.text.strip rescue nil
         end
+
       end
 
       result

@@ -1,3 +1,3 @@
 module Desuraify
-  VERSION = "0.0.3.pre"
+  VERSION = "0.0.5.pre"
 end

@@ -62,21 +62,20 @@ Or install it yourself as:
   => "illwinter-game-design"
   ```
 
-  \# numerous other attributes are available (some partially or poorly implemented)
+  \# numerous other attributes are available
   ```
   puts Desuraify::Game::ATTRIBUTES.inspect
   or
-  puts game.attributes.inspect
+  puts game.attributes
   ```
 
-## TODO in no particular order
+## TODO
 
-  1. Maybe nothing, apparently the parent company of Desura filed for bankruptcy yesterday...
-  2. Gather Engine data (currently game data is all that is functional)
-  3. Gather Member data
-  4. Gather Company data
+  1. Gather Engine data - June 12, 2015
+  2. Gather Member data - July 21, 2015
+  4. Gather Company data - June 13, 2015
   5. Documentation...
-  6. Tests (I know, I'm a horrible person)
+  6. Tests - July 21, 2015
 
 ## Contributing
 

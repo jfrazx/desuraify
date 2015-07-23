@@ -2,9 +2,9 @@ module Desuraify
   class Company < Base
 
     ATTRIBUTES = [
-      :members, :member_count, :html, :official_page, :company, :rank, :visits, :game_count, 
-      :office, :watchers, :address, :phone, :engine_count, :news_count, :images, 
-      :image_count, :videos, :video_count
+      :address, :company, :engines_count, :games_count, :html, :images, :images_count,
+      :members, :members_count, :news_count, :office, :official_page, :phone, :rank, 
+      :videos, :videos_count, :visits, :watchers
     ]
 
     attr_reader *ATTRIBUTES

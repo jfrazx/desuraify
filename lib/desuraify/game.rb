@@ -3,10 +3,10 @@ module Desuraify
   class Game < Base
     ATTRIBUTES = [
       :boxshot, :developers, :engines, :expansion, :genres, :html, 
-      :image_count, :images, :languages, :news, :news_count, :official_page, 
-      :original_price, :page_title, :platforms, :players, :price, :project, 
+      :images_count, :images, :languages, :news, :news_count, :official_page, 
+      :original_price, :page_title, :platforms, :players, :price, :projects, 
       :publishers, :rank, :rating, :reviews, :summary, :themes, :title, 
-      :updated, :video_count, :videos, :visits, :watchers
+      :updated, :videos, :videos_count, :visits, :watchers
     ]
 
     attr_reader *ATTRIBUTES

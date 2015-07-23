@@ -1,10 +1,10 @@
 module Desuraify
   class Engine < Base
     ATTRIBUTES = [
-      :developers, :games, :game_count, :html, :images, :image_count, :license, :news, 
+      :developers, :games, :games_count, :html, :images, :images_count, :license, :news, 
       :news_count, :official_page, :page_title, :platforms, :publishers, :rank, 
       :rating, :release_date, :reviews, :summary, :title, :updated, :videos, 
-      :video_count, :visits, :watchers
+      :videos_count, :visits, :watchers
     ]
 
     attr_reader *ATTRIBUTES
@@ -20,6 +20,8 @@ module Desuraify
       result = parse_headers(doc.css('h5'))
       result.merge!(parse_similar(doc, result[:image_count], result[:video_count]))
       result[:html] = html
+
+      result[:publishers] = result[:developers].map{ |dev| dev.dup } unless result[:publishers] if result[:developers]
 
       result
 

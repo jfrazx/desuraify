@@ -53,6 +53,8 @@ module Desuraify
       headers.each do |header|
         next if header.text.strip.empty?
 
+        attribute = header.text.strip.split(" ").join("_").downcase.intern
+
         case header.text.strip
         when /^Platforms?$/i
 
@@ -71,53 +73,30 @@ module Desuraify
             eng
           end.uniq
 
-        when "Engines"
+        when /^Developers?/i, /Publishers?$/i
 
-          result[:engine_count] = header.next.next.text.strip.to_i rescue nil
+          attribute = header.text.downcase
+          attribute << "s" unless attribute[-1] == "s"
 
-        when /^Developers?/i
-
-          result[:developers] = header.parent.children.select do |developer|
-            developer unless developer == header || developer.text.strip.empty?
-          end.map do |develop|
-            developer = Hash.new
-            developer[:name] = develop.text.strip
-            href = develop.child.attribute('href').value.split('/')
-            developer[:company] = !!href.find{|company| company.match(/^company$/i)}
-            developer[:id] = href.last
-            developer
+          result[attribute.intern] = header.parent.children.select do |entity|
+            entity unless entity == header || entity.text.strip.empty?
+          end.map do |entity|
+            target = Hash.new
+            target[:name] = entity.text.strip
+            href = entity.child.attribute('href').value.split('/')
+            target[:company] = !!href.find{|company| company.match(/^company$/i)}
+            target[:id] = href.last
+            target
           end.uniq
 
-        when /Publishers?$/i
+        when /Languages?/i, /^Genres?/i, /^Themes?$/i, "Players", /^Projects?$/
 
-          result[:publishers] = header.parent.children.select do |publisher|
-            publisher unless publisher == header || publisher.text.strip.empty?
-          end.map do |pub|
-            publisher = Hash.new
-            publisher[:name] = pub.text.strip
-            href = pub.child.attribute('href').value.split('/')
-            publisher[:company] = !!href.find{|company| company.match(/^company$/i)}
-            publisher[:id] = href.last
-            publisher
-          end.uniq
+          attribute = header.text.downcase
+          attribute << "s" unless attribute[-1] == "s"
 
-        when /Languages?/i
-
-          result[:languages] = header.parent.children.select do |language|
-            language unless language == header || language.text.strip.empty?
-          end.map! {|language| language.text.strip }.uniq
-
-        when /^Genres?/i
-
-          result[:genres] = header.parent.children.select do |genre|
-            genre unless genre == header || genre.text.strip.empty?
-          end.map {|genre| genre.text.strip }.uniq
-
-        when /^Themes?$/i
-
-          result[:themes] = header.parent.children.select do |theme|
-            theme unless theme == header || theme.text.strip.empty?
-          end.map {|theme| theme.text.strip }.uniq
+          result[attribute.intern] = header.parent.children.select do |entity|
+            entity unless entity == header || entity.text.strip.empty?
+          end.map! {|entity| entity.text.strip }.uniq
 
         when /^This game is an expansion for\s+?/i
 
@@ -128,86 +107,39 @@ module Desuraify
           expansion[:id] = header.parent.search('a').attribute('href').value.split('/').last.strip
           result[:expansion] = expansion
 
-        when /^Projects?$/
-
-          result[:project] = header.parent.children.select do |project|
-            project unless project == header || project.text.strip.empty?
-          end.map {|project| project.text.strip }.uniq
-
-        when "Players"
-
-          result[:players] = header.parent.children.select do |player|
-            player unless player == header || player.text.strip.empty?
-          end.map{|player| player.text.strip }.uniq
-
         when "Boxshot"
 
-          result[:boxshot] = header.parent.search('a').attribute('href').value.strip rescue nil
+          result[attribute] = header.parent.search('a').attribute('href').value.strip rescue nil
 
         when "Last Update"
 
           result[:updated] = header.next.next.text.strip rescue nil
 
-        when "License"
+        when "News", "Members", "Videos", "Games", "Images", "Engines"
 
-          result[:license] = header.next.next.text.strip rescue nil
+          attribute = header.text.strip.split(" ").push("count").join("_").downcase.intern
+          result[attribute] = header.next.next.text.strip.to_i rescue nil
 
-        when "Release Date"
 
-          result[:release_date] = header.next.next.text.strip rescue nil
-
-        when "Watchers"
-
-          result[:watchers] = header.next.next.text.strip rescue nil
-
-        when "Images"
-
-          result[:image_count] = header.next.next.text.strip.to_i rescue nil
-
-        when "Games"
-
-          result[:game_count] = header.next.next.text.strip.to_i   rescue nil
-
-        when "News"
-
-          result[:news_count] = header.next.next.text.strip.to_i rescue nil
-
-        when "Rank"
-
-          result[:rank] = header.next.next.text.strip rescue nil
-
-        when "Videos"
-
-          result[:video_count] = header.next.next.text.strip.to_i rescue nil
-
-        when "Visits"
+        when "Visits", "Profile Visitors"
 
           result[:visits] = header.next.next.text.strip rescue nil
 
-        when "Official Page"
+        when "Official Page", "Homepage"
 
           result[:official_page] = header.parent.search('a').attribute('href').value.strip rescue nil
 
+        when "Offline Since"
 
-        when "Homepage"
+          result[:offline] = header.next.next.text.strip rescue nil
 
-          result[:official_page] = header.parent.search('a').attribute('href').value.strip rescue nil
+        when "Activity Points"
 
-        when "Members"
+          result[:activity_points] = header.next.next.text.strip.to_i rescue nil
 
-          result[:member_count] = header.next.next.text.strip.to_i rescue nil
+        when "Company", "Office", "Time Online", "Site Visits", /^Gender/, /^Country/, "Established", "Watchers", "Rank", "License", "Release Date", "Phone"
 
-        when "Established"
-
-            result[:established] = header.next.next.text.strip rescue nil
-
-        when "Company"
-
-          result[:company] = header.next.next.text.strip rescue nil
-
-        when "Office"
-
-            result[:office] = header.next.next.text.strip rescue nil
+          result[attribute] = header.next.next.text.strip rescue nil
 
         when "Address"
 
@@ -221,12 +153,15 @@ module Desuraify
 
           result[:address] = addresses.map { |address| address.split("\n") }.flatten
 
-        when "Phone"
-
-          result[:phone] = header.next.next.text.strip rescue nil
         end
 
       end
+
+      result[:engines_count]  = result[:engines_count]  || 0
+      result[:images_count]   = result[:images_count]   || 0
+      result[:videos_count]   = result[:videos_count]   || 0 
+      result[:games_count]    = result[:games_count]    || 0 
+      result[:news_count]     = result[:news_count]     || 0 
 
       result
     end
@@ -234,17 +169,19 @@ module Desuraify
     def parse_similar(doc, img_count=0, vid_count=0)
       result = Hash.new
 
-      result[:rating] = doc.at_css('.score').text.strip rescue nil
+      result[:rating] = doc.at_css('.score').text.strip.to_f rescue nil
+      result[:level]  = result[:rating]
 
       result[:videos] = doc.css('.videobox').search('a').map do |video|
         values = video.attribute('href').value.strip.split('/')
         values.pop
         "http://www.desura.com#{values.join('/')}"
       end rescue nil
-      result[:videos] = rss_update(video_rss) if result[:videos].size < vid_count
+
+      result[:videos] = rss_update(video_rss) if result[:videos].size < vid_count rescue nil
 
       result[:images] = doc.css('.mediaitem').search('a').select{|item| item if item.attribute('href').value.match(/^https?/i) }.map{|pic| pic.attribute('href').value.strip }
-      result[:images] = rss_update(image_rss) if result[:images].size < img_count
+      result[:images] = rss_update(image_rss) if result[:images].size < img_count rescue nil
 
       result[:summary] = doc.at_css('.body.clear').search('p').map{ |paragraph| paragraph.text.strip }
       result[:page_title] = doc.css('title').text.strip

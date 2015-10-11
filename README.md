@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install desuraify --pre
+    $ gem install desuraify
 
 ## Usage
   ```
@@ -22,7 +22,7 @@ Or install it yourself as:
   ```
 
   \# get all information about Dominions 4: Thrones of Ascension
-  
+
   \# (http://www.desura.com/games/dominions-4-thrones-of-ascensions)
   ```
   game = Desuraify::Game.new('dominions-4-thrones-of-ascensions')
@@ -79,7 +79,7 @@ Or install it yourself as:
 
 ## Contributing
 
-  1. Fork it ( https://github.com/[my-github-username]/desuraify/fork )
+  1. Fork it ( https://github.com/jfrazx/desuraify/fork )
   2. Create your feature branch (`git checkout -b my-new-feature`)
   3. Commit your changes (`git commit -am 'Add some feature'`)
   4. Push to the branch (`git push origin my-new-feature`)
